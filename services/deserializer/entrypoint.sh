@@ -29,4 +29,4 @@ lsmod | grep vcan
 #output should be similar to: vcan         16384 0
 
 echo "Running app..."
-python main.py vcan0 "$DBC_FILE"
+python main.py "${CAN_INTERFACE:-vcan0}"
