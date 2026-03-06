@@ -8,6 +8,16 @@ A telemetry pipeline for vehicle-mounted embedded systems.
 - **Redis**: In-memory data store for telemetry buffering and persistence
 - **Kafka-Connector**: Reads telemetry from Redis and streams to Kafka
 
+## Configuration
+
+Copy `.env.example` to `.env` and fill in the required values:
+
+```bash
+cp .env.example .env
+```
+
+See `.env.example` for descriptions of each variable.
+
 ## Build and Run
 
 Build the project:

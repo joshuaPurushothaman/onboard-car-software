@@ -1,4 +1,8 @@
 /build/
+
+# Environment variables (user-specific configuration)
+.env
+
 /.idea/.gitignore
 /.idea/copilot.data.migration.agent.xml
 /.idea/copilot.data.migration.ask.xml

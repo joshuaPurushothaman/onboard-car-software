@@ -1,6 +1,33 @@
 #!/bin/bash
 set -e
 
+# Validate required environment variables
+required_vars=("DEVICE_NAME" "CONNECT_BOOTSTRAP_SERVERS" "CONNECT_REST_ADVERTISED_HOST_NAME")
+for var in "${required_vars[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "ERROR: Required environment variable $var is not set"
+    exit 1
+  fi
+done
+
+# Compute Kafka Connect configuration from DEVICE_NAME
+export CONNECT_GROUP_ID="${DEVICE_NAME}-connect"
+export CONNECT_CONFIG_STORAGE_TOPIC="${DEVICE_NAME}-connect-config"
+export CONNECT_OFFSET_STORAGE_TOPIC="${DEVICE_NAME}-connect-offsets"
+export CONNECT_STATUS_STORAGE_TOPIC="${DEVICE_NAME}-connect-status"
+
+echo "Configured Kafka Connect for device: ${DEVICE_NAME}"
+echo "  Group ID: ${CONNECT_GROUP_ID}"
+echo "  Bootstrap Servers: ${CONNECT_BOOTSTRAP_SERVERS}"
+echo "  Advertised Host: ${CONNECT_REST_ADVERTISED_HOST_NAME}"
+
+# Generate redis-connector.json from template using sed
+sed "s/\${DEVICE_NAME}/${DEVICE_NAME}/g" /etc/kafka-connect/redis-connector.template.json > "$KAFKA_CONNECTOR_DEFINITION_FILE"
+echo "Generated connector config from template"
+
+# Connector name derived from DEVICE_NAME
+CONNECTOR_NAME="${DEVICE_NAME}-decoded-can-source"
+
 # Start Kafka Connect in the background
 /etc/confluent/docker/run &
 KAFKA_PID=$!
@@ -17,10 +44,10 @@ done
 echo "Kafka Connect is ready!"
 
 # Create Redis connector if it doesn't exist
-if curl -s -f http://localhost:8083/connectors/redis-testytime-source > /dev/null 2>&1; then
-  echo "Connector already exists, skipping creation."
+if curl -s -f "http://localhost:8083/connectors/${CONNECTOR_NAME}" > /dev/null 2>&1; then
+  echo "Connector '${CONNECTOR_NAME}' already exists, skipping creation."
 else
-  echo "Creating Redis connector..."
+  echo "Creating Redis connector '${CONNECTOR_NAME}'..."
   response=$(curl -s -w "\n%{http_code}" -X POST -H "Content-Type: application/json" \
        -d @"$KAFKA_CONNECTOR_DEFINITION_FILE" \
        http://localhost:8083/connectors)

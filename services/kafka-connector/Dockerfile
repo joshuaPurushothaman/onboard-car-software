@@ -14,14 +14,10 @@ USER appuser
 
 
 # Environment variables for Kafka Connect configuration
+# DEVICE_NAME, CONNECT_BOOTSTRAP_SERVERS, and CONNECT_REST_ADVERTISED_HOST_NAME
+# must be provided at runtime. Other CONNECT_* vars are computed in entrypoint.sh
 ENV KAFKA_CONNECTOR_DEFINITION_FILE=/etc/kafka-connect/redis-connector.json \
     CONNECT_PLUGIN_PATH=/usr/share/confluent-hub-components \
-    CONNECT_BOOTSTRAP_SERVERS="clean-kafka.jacob-smoot.ts.net:9092" \
-    CONNECT_GROUP_ID="car-redis" \
-    CONNECT_REST_ADVERTISED_HOST_NAME="andrew-laptop.jacob-smoot.ts.net" \
-    CONNECT_CONFIG_STORAGE_TOPIC="car-redis-config" \
-    CONNECT_OFFSET_STORAGE_TOPIC="car-redis-offsets" \
-    CONNECT_STATUS_STORAGE_TOPIC="car-redis-status" \
     CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1 \
     CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1 \
     CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1 \
@@ -34,6 +30,6 @@ ENV KAFKA_CONNECTOR_DEFINITION_FILE=/etc/kafka-connect/redis-connector.json \
 
 # Copy entrypoint files and run
 COPY entrypoint.sh /entrypoint.sh
-COPY redis-connector.json /etc/kafka-connect/redis-connector.json
+COPY redis-connector.template.json /etc/kafka-connect/redis-connector.template.json
 
 ENTRYPOINT ["/entrypoint.sh"]

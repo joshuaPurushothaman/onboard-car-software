@@ -10,9 +10,11 @@ services:
     depends_on:
       - redis
     environment:
-      - DBC_FILE=/app/dbc-files/canmod-gps.dbc
+      - CAN_INTERFACE=${CAN_INTERFACE:-vcan0}
+      - DBC_DIR=/app/dbc-files
+      - REDIS_PORT=${REDIS_PORT:-6380}
     volumes:
-      - ./services/deserializer/dbc-files:/app/dbc-files:ro
+      - ./dbc-files:/app/dbc-files:ro
 
   redis:
     container_name: redis
@@ -22,9 +24,8 @@ services:
       - ./services/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro # mounting the redis config from host, read only
       - redis-data:/data # named volume for data persistence
     ports:
-      # the host (127.0.0.1) sends traffic through port 6379
-      # which is bound to the containers port 6379
-      - "127.0.0.1:6380:6379"
+      # Expose Redis on localhost for the host-networked deserializer
+      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
     restart: unless-stopped # restarts the container if it crashes
 
   kafka-connector:
@@ -35,6 +36,10 @@ services:
     restart: unless-stopped
     depends_on:
       - redis
+    environment:
+      - DEVICE_NAME=${DEVICE_NAME}
+      - CONNECT_BOOTSTRAP_SERVERS=${CONNECT_BOOTSTRAP_SERVERS}
+      - CONNECT_REST_ADVERTISED_HOST_NAME=${CONNECT_REST_ADVERTISED_HOST_NAME}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8083/connectors"]
       interval: 50s
