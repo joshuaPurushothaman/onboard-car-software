@@ -8,11 +8,9 @@ A telemetry pipeline for vehicle-mounted embedded systems.
 - **Redis**: In-memory data store for telemetry buffering and persistence
 - **Kafka-Connector**: Reads telemetry from Redis and streams to Kafka
 
-## DBC Files
+## Configuration
 
 Place your `.dbc` files in the `dbc-files/` directory. All files will be loaded automatically.
-
-## Configuration
 
 Copy `.env.example` to `.env` and fill in the required values:
 
