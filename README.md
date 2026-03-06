@@ -6,7 +6,7 @@ A telemetry pipeline for vehicle-mounted embedded systems.
 
 - **Deserializer**: Reads CAN bus data and stores it in Redis
 - **Redis**: In-memory data store for telemetry buffering and persistence
-- **Streamer**: Reads telemetry from Redis and streams to Kafka
+- **Kafka-Connector**: Reads telemetry from Redis and streams to Kafka
 
 ## Build and Run
 
