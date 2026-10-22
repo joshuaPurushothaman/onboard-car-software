@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-# curl -LsSf https://astral.sh/uv/install.sh | sh
+cd ./services/deserializer
+
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
@@ -11,5 +13,7 @@ sudo apt-get install -y --no-install-recommends \
       kmod \
       build-essential
 
-# pip install -r requirements.txt
-uv sync
+uv venv
+uv pip install -r requirements.txt
+# TODO: use `uv run main.py`
+# TODO: make entrypoint use root
