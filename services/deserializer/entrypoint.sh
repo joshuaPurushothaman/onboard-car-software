@@ -9,13 +9,13 @@ if ! ip link show vcan0 >/dev/null 2>&1; then
    echo "Creating vcan0 interface..."
    
 
-   ip link add dev vcan0 type vcan
+   sudo ip link add dev vcan0 type vcan
    echo "ip link add"
 
-   ip link set vcan0 mtu 72
+   sudo ip link set vcan0 mtu 72
    echo "ip link set vcan0"
 
-   ip link set up vcan0
+   sudo ip link set up vcan0
    echo "ip link set up vcan0"
 
    #bitrate 250000 (use for physical can)
@@ -29,4 +29,4 @@ lsmod | grep vcan
 #output should be similar to: vcan         16384 0
 
 echo "Running app..."
-python main.py "${CAN_INTERFACE:-vcan0}"
+uv run main.py "${CAN_INTERFACE:-vcan0}"
