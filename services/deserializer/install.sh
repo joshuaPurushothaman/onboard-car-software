@@ -3,8 +3,8 @@ set -e
 
 # curl -LsSf https://astral.sh/uv/install.sh | sh
 
-apt-get update
-apt-get install -y --no-install-recommends \
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends \
       iproute2 \
       can-utils \
       net-tools \
