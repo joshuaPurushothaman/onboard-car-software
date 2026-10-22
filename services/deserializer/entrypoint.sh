@@ -29,4 +29,5 @@ lsmod | grep vcan
 #output should be similar to: vcan         16384 0
 
 echo "Running app..."
-uv run main.py "${CAN_INTERFACE:-vcan0}"
+cd ./services/deserializer/
+uv run ./main.py "${CAN_INTERFACE:-vcan0}"
